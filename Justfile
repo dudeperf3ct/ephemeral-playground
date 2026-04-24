@@ -37,7 +37,7 @@ check-kvm:
 check-artifacts:
     {{scripts_dir}}/check_artifacts.sh
 
-firecracker-install version="v1.15.0":
+firecracker-install version="v1.15.1":
     {{scripts_dir}}/firecracker_install.sh "{{version}}"
 
 start-firecracker: check-artifacts

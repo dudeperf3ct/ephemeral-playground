@@ -119,6 +119,9 @@ just snapshot-restore latest false
 just vm-resume
 ```
 
+> [!NOTE]
+> We implement only full snapshots in this project, but Firecracker also supports "diff" snapshots that save only the delta from a base snapshot.
+
 ## Logs
 
 Follow guest serial output in detached mode:
