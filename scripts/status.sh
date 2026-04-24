@@ -30,3 +30,12 @@ if [[ -f "$LOG_FILE" ]]; then
   echo "Recent logs:"
   tail -n 20 "$LOG_FILE" || true
 fi
+
+if command -v ip >/dev/null 2>&1; then
+  if ip link show dev "$TAP_DEV" >/dev/null 2>&1; then
+    echo "TAP device present: $TAP_DEV"
+    ip -4 addr show dev "$TAP_DEV" | sed 's/^/  /'
+  else
+    echo "TAP device missing: $TAP_DEV"
+  fi
+fi

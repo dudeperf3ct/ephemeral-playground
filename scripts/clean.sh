@@ -21,16 +21,39 @@ echo "Cleaning Firecracker host-side state..."
 # Stop a running Firecracker process if we have its PID.
 if [[ -f "$PID_FILE" ]]; then
   pid="$(cat "$PID_FILE")"
-  if kill -0 "$pid" 2>/dev/null; then
-    echo "Stopping Firecracker (pid: $pid)..."
-    kill "$pid"
-    wait "$pid" 2>/dev/null || true
+  if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
+    stop_firecracker_process "$pid"
   fi
 fi
 
+mapfile -t discovered_pids < <(list_firecracker_pids_for_socket)
+if [[ "${#discovered_pids[@]}" -gt 0 ]]; then
+  echo "Found Firecracker process(es) without pid file: ${discovered_pids[*]}"
+  for pid in "${discovered_pids[@]}"; do
+    if kill -0 "$pid" 2>/dev/null; then
+      stop_firecracker_process "$pid" || true
+    fi
+  done
+fi
+
+mapfile -t remaining_pids < <(list_firecracker_pids_for_socket)
+can_remove_runtime_files=true
+if [[ "${#remaining_pids[@]}" -eq 0 ]]; then
+  if [[ -x "$SCRIPT_DIR/network_down.sh" ]]; then
+    "$SCRIPT_DIR/network_down.sh" || true
+  fi
+else
+  echo "WARN: Firecracker still running (${remaining_pids[*]}). Skipping network teardown."
+  can_remove_runtime_files=false
+fi
+
 # Explicit known files.
-remove_path "$API_SOCKET"
-remove_path "$PID_FILE"
+if [[ "$can_remove_runtime_files" == "true" ]]; then
+  remove_path "$API_SOCKET"
+  remove_path "$PID_FILE"
+else
+  echo "Skipping API socket/pid cleanup while Firecracker is still running."
+fi
 remove_path "$LOG_FILE"
 remove_path "$SNAPSHOT_DIR"
 

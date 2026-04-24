@@ -11,11 +11,12 @@ help:
     @echo "  1) Host check:   just check-kvm"
     @echo "  2) Assets check: just check-artifacts"
     @echo "  3) Start API:    just start-firecracker"
-    @echo "  4) Configure VM: just configure-vm"
-    @echo "  5) Boot VM:      just start-instance"
-    @echo "  6) Inspect:      just status"
-    @echo "  7) Stop/cleanup: just stop-firecracker"
-    @echo "  8) Deep clean:   just clean"
+    @echo "  4) Host net:     just network-up"
+    @echo "  5) Configure VM: just configure-vm"
+    @echo "  6) Boot VM:      just start-instance"
+    @echo "  7) Inspect:      just status"
+    @echo "  8) Stop/cleanup: just stop-firecracker"
+    @echo "  9) Deep clean:   just clean"
     @echo ""
     @echo "Snapshot flow:"
     @echo "  Create:          just snapshot-create latest Full"
@@ -45,10 +46,16 @@ start-firecracker: check-artifacts
 start-firecracker-console: check-artifacts
     @echo "Starting Firecracker in foreground on {{api_socket}}..."
     @echo "Use a second terminal to run: just boot-vm"
-    {{firecracker_bin}} --api-sock {{api_socket}}
+    -{{firecracker_bin}} --api-sock {{api_socket}}
 
 configure-vm:
     {{scripts_dir}}/configure_vm.sh
+
+network-up:
+    {{scripts_dir}}/network_up.sh
+
+network-down:
+    {{scripts_dir}}/network_down.sh
 
 start-instance:
     {{scripts_dir}}/start_instance.sh
@@ -65,10 +72,10 @@ vm-resume:
 vm-pause:
     {{scripts_dir}}/vm_state.sh Paused
 
-boot-vm: configure-vm start-instance
+boot-vm: network-up configure-vm start-instance
     @echo "MicroVM configured and started."
 
-vm-up: check-kvm check-artifacts start-firecracker configure-vm start-instance
+vm-up: check-kvm check-artifacts start-firecracker network-up configure-vm start-instance
     @echo "Firecracker VM is up."
 
 status:
