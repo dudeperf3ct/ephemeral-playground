@@ -147,9 +147,6 @@ By default the project sets up:
 - Guest DNS: `8.8.8.8`, `1.1.1.1` (injected via `boot_args`)
 - NAT/forwarding from guest traffic to the host default interface
 
->[!NOTE]
-> DNS is configured in kernel boot args by default. If your guest image does not materialize `/etc/resolv.conf` from boot-time network config, set it manually in the guest shell. Run 
-
 Bring networking up/down explicitly:
 
 ```bash
