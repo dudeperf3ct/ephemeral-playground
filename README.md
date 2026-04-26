@@ -19,6 +19,8 @@ Use `just help` for guided detached and interactive console flows.
   - `artifacts/vmlinux.bin`: Guest kernel image
   - `artifacts/rootfs.ext4`: Guest root filesystem
 
+To download Guest kernel and rootfs artifacts, refer [here](https://dudeperf3ct.github.io/projects/ephermal_playground/#configure-bootsource) and [here](https://dudeperf3ct.github.io/projects/ephermal_playground/#configure-rootfs).
+
 ## Install/Update Firecracker Binary
 
 This installs `firecracker` binary into the project root.
