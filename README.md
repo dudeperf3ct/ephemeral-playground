@@ -4,6 +4,9 @@ Firecracker microVM playground driven by `just` tasks with script-backed impleme
 
 Use `just help` for guided detached and interactive console flows.
 
+> [!NOTE]
+> Write up: https://dudeperf3ct.github.io/projects/ephermal_playground/
+
 ## Prerequisites
 
 - Linux host with KVM (`/dev/kvm` present and accessible)
